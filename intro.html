@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Heri-Agent - 古建筑AI复原系统 | Ancient Architecture AI Reconstruction System</title>
+  <link rel="icon" href="logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #1a1a1a;
+      --bg-card: rgba(30, 30, 46, 0.85);
+      --text-primary: #f1f1f1;
+      --text-secondary: #a7a7a7;
+      --accent: #9575cd;
+      --accent-light: #b39ddb;
+      --accent-dark: #4d2c91;
+      --gold: #d4af37;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Serif SC', 'Roboto', serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+
+    /* 导航栏 */
+    .navbar {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: rgba(10, 10, 10, 0.95);
+      backdrop-filter: blur(10px);
+      z-index: 1000;
+      padding: 1rem 2rem;
+      transition: all 0.3s ease;
+    }
+
+    .navbar.scrolled {
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .nav-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .logo-img {
+      width: 40px;
+      height: 40px;
+    }
+
+    .logo-text {
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent), var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--accent-light);
+    }
+
+    .lang-switch {
+      background: transparent;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .lang-switch:hover {
+      background: var(--accent);
+      color: white;
+    }
+
+    /* 英雄区域 */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.1;
+      background-image: 
+        radial-gradient(circle at 20% 50%, var(--accent) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, var(--gold) 0%, transparent 50%);
+    }
+
+    .hero-content {
+      text-align: center;
+      z-index: 1;
+      padding: 2rem;
+      max-width: 1200px;
+    }
+
+    .hero-logo {
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 2rem;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+
+    .hero-title {
+      font-size: 3.5rem;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, var(--text-primary), var(--accent-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-subtitle {
+      font-size: 1.8rem;
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+    }
+
+    .hero-description {
+      font-size: 1.2rem;
+      line-height: 1.8;
+      color: var(--text-secondary);
+      max-width: 800px;
+      margin: 0 auto 3rem;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .cta-button {
+      padding: 1rem 2.5rem;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+      color: white;
+    }
+
+    .cta-secondary {
+      background: transparent;
+      color: var(--accent);
+      border: 2px solid var(--accent);
+    }
+
+    .cta-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(149, 117, 205, 0.3);
+    }
+
+    /* 特性部分 */
+    .features {
+      padding: 5rem 2rem;
+      background: var(--bg-secondary);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 3rem;
+      color: var(--accent);
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2rem;
+    }
+
+    .feature-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 2rem;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(149, 117, 205, 0.2);
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(149, 117, 205, 0.2);
+      border-color: var(--accent);
+    }
+
+    .feature-icon {
+      font-size: 3rem;
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+    }
+
+    .feature-title {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: var(--text-primary);
+    }
+
+    .feature-description {
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* 工作流程部分 */
+    .workflow {
+      padding: 5rem 2rem;
+      background: var(--bg-primary);
+    }
+
+    .workflow-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .step {
+      text-align: center;
+      position: relative;
+    }
+
+    .step-number {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin: 0 auto 1rem;
+    }
+
+    .step-title {
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+      color: var(--accent-light);
+    }
+
+    .step-description {
+      color: var(--text-secondary);
+    }
+
+    /* 连接线 - 只在同一行的元素之间显示 */
+    .step:not(:nth-child(3n))::after {
+      content: '';
+      position: absolute;
+      top: 30px;
+      left: 50%;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent) 0%, transparent 100%);
+      opacity: 0.3;
+    }
+
+    /* 演示部分 */
+    .demo {
+      padding: 5rem 2rem;
+      background: var(--bg-secondary);
+    }
+
+    .demo-container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .video-wrapper {
+      position: relative;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      margin-bottom: 3rem;
+    }
+
+    .video-wrapper video {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .play-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .play-overlay:hover {
+      background: rgba(0, 0, 0, 0.3);
+    }
+
+    .play-button {
+      width: 80px;
+      height: 80px;
+      background: rgba(149, 117, 205, 0.9);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.3s ease;
+    }
+
+    .play-button:hover {
+      transform: scale(1.1);
+    }
+
+    .play-icon {
+      width: 0;
+      height: 0;
+      border-left: 25px solid white;
+      border-top: 15px solid transparent;
+      border-bottom: 15px solid transparent;
+      margin-left: 5px;
+    }
+
+    /* 图片展示 */
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+
+    .gallery-item {
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .gallery-item:hover {
+      transform: scale(1.05);
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* 技术栈部分 */
+    .tech-stack {
+      padding: 5rem 2rem;
+      background: var(--bg-primary);
+    }
+
+    .tech-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .tech-item {
+      text-align: center;
+      padding: 2rem;
+      background: var(--bg-card);
+      border-radius: 10px;
+      transition: all 0.3s ease;
+    }
+
+    .tech-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(149, 117, 205, 0.2);
+    }
+
+    .tech-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: var(--accent);
+    }
+
+    /* 响应式设计 */
+    @media (max-width: 768px) {
+      .hero-title {
+        font-size: 2.5rem;
+      }
+
+      .hero-subtitle {
+        font-size: 1.3rem;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .workflow-steps {
+        grid-template-columns: 1fr;
+      }
+
+      .step:not(:nth-child(3n))::after {
+        display: none;
+      }
+
+      .tech-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* 语言切换样式 */
+    .lang-en {
+      display: none;
+    }
+
+    body.en .lang-zh {
+      display: none;
+    }
+
+    body.en .lang-en {
+      display: block;
+    }
+
+    /* 滚动动画 */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.8s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* 加载动画 */
+    .loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease;
+    }
+
+    .loader.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .loader-content {
+      text-align: center;
+    }
+
+    .loader-logo {
+      width: 80px;
+      height: 80px;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.8; }
+    }
+  </style>
+</head>
+<body>
+  <!-- 加载动画 -->
+  <div class="loader" id="loader">
+    <div class="loader-content">
+      <img src="logo.svg" alt="Logo" class="loader-logo">
+    </div>
+  </div>
+
+  <!-- 导航栏 -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <div class="logo-section">
+        <img src="logo.svg" alt="Logo" class="logo-img">
+        <h1 class="logo-text">Heri-Agent</h1>
+      </div>
+      <ul class="nav-links">
+        <li><a href="#home"><span class="lang-zh">首页</span><span class="lang-en">Home</span></a></li>
+        <li><a href="#features"><span class="lang-zh">特性</span><span class="lang-en">Features</span></a></li>
+        <li><a href="#workflow"><span class="lang-zh">工作流程</span><span class="lang-en">Workflow</span></a></li>
+        <li><a href="#demo"><span class="lang-zh">演示</span><span class="lang-en">Demo</span></a></li>
+        <li><a href="#tech"><span class="lang-zh">技术</span><span class="lang-en">Technology</span></a></li>
+      </ul>
+      <button class="lang-switch" onclick="toggleLanguage()">
+        <span class="lang-zh">EN</span>
+        <span class="lang-en">中文</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- 英雄区域 -->
+  <section class="hero" id="home">
+    <div class="hero-bg"></div>
+    <div class="hero-content fade-in">
+      <img src="logo.svg" alt="Heri-Agent Logo" class="hero-logo">
+      <h1 class="hero-title">
+        <span class="lang-zh">Heri-Agent 古建筑AI复原系统</span>
+        <span class="lang-en">Heri-Agent Ancient Architecture AI System</span>
+      </h1>
+      <p class="hero-subtitle">
+        <span class="lang-zh">基于大语言模型的中国古建筑智能复原解决方案</span>
+        <span class="lang-en">LLM-based Chinese Ancient Architecture Reconstruction Solution</span>
+      </p>
+      <p class="hero-description">
+        <span class="lang-zh">
+          我们基于QWQ-32B微调了专门的古建筑文本领域大模型，能够从古文献中推理出建筑的形制、开间进深、屋顶样式等级等关键信息，
+          通过Python规则引擎输出参数化数据，在Blender中自动生成精确的3D模型，最终同步展示在Web端。
+        </span>
+        <span class="lang-en">
+          We fine-tuned a specialized LLM based on QWQ-32B for ancient architecture texts, capable of inferring architectural 
+          forms, bay depths, roof styles and grades from ancient literature. Through Python rule engines, it outputs parametric 
+          data to automatically generate accurate 3D models in Blender, finally synchronized for web display.
+        </span>
+      </p>
+      <div class="cta-buttons">
+        <a href="index.html" class="cta-button cta-primary">
+          <span class="lang-zh">开始体验</span>
+          <span class="lang-en">Try Now</span>
+        </a>
+        <a href="#demo" class="cta-button cta-secondary">
+          <span class="lang-zh">观看演示</span>
+          <span class="lang-en">Watch Demo</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 特性部分 -->
+  <section class="features" id="features">
+    <div class="container">
+      <h2 class="section-title fade-in">
+        <span class="lang-zh">核心特性</span>
+        <span class="lang-en">Core Features</span>
+      </h2>
+      <div class="features-grid">
+        <div class="feature-card fade-in">
+          <div class="feature-icon"><i class="fas fa-brain"></i></div>
+          <h3 class="feature-title">
+            <span class="lang-zh">智能文献解析</span>
+            <span class="lang-en">Intelligent Literature Analysis</span>
+          </h3>
+          <p class="feature-description">
+            <span class="lang-zh">
+              基于QWQ-32B微调的专业模型，能够准确理解古文献中的建筑描述，推理出建筑的具体形制参数。
+            </span>
+            <span class="lang-en">
+              Professional model fine-tuned on QWQ-32B, accurately understands architectural descriptions in ancient texts 
+              and infers specific architectural parameters.
+            </span>
+          </p>
+        </div>
+        <div class="feature-card fade-in">
+          <div class="feature-icon"><i class="fas fa-cogs"></i></div>
+          <h3 class="feature-title">
+            <span class="lang-zh">参数化建模</span>
+            <span class="lang-en">Parametric Modeling</span>
+          </h3>
+          <p class="feature-description">
+            <span class="lang-zh">
+              通过Python规则引擎，将文本信息转化为精确的参数化数据，实现建筑结构的标准化描述。
+            </span>
+            <span class="lang-en">
+              Converts text information into precise parametric data through Python rule engines, achieving standardized 
+              architectural structure descriptions.
+            </span>
+          </p>
+        </div>
+        <div class="feature-card fade-in">
+          <div class="feature-icon"><i class="fas fa-cube"></i></div>
+          <h3 class="feature-title">
+            <span class="lang-zh">自动3D重建</span>
+            <span class="lang-en">Automatic 3D Reconstruction</span>
+          </h3>
+          <p class="feature-description">
+            <span class="lang-zh">
+              与Blender几何节点深度集成，根据参数自动生成高质量的3D建筑模型，支持多种建筑类型和风格。
+            </span>
+            <span class="lang-en">
+              Deep integration with Blender geometry nodes, automatically generates high-quality 3D architectural models 
+              based on parameters, supporting various building types and styles.
+            </span>
+          </p>
+        </div>
+        <div class="feature-card fade-in">
+          <div class="feature-icon"><i class="fas fa-sync"></i></div>
+          <h3 class="feature-title">
+            <span class="lang-zh">实时可视化</span>
+            <span class="lang-en">Real-time Visualization</span>
+          </h3>
+          <p class="feature-description">
+            <span class="lang-zh">
+              通过视窗同步技术，将Blender中的模型实时展示在Web端，用户可以交互式地查看和探索建筑细节。
+            </span>
+            <span class="lang-en">
+              Through viewport synchronization technology, displays Blender models in real-time on the web, allowing users 
+              to interactively view and explore architectural details.
+            </span>
+          </p>
+        </div>
+        <div class="feature-card fade-in">
+          <div class="feature-icon"><i class="fas fa-database"></i></div>
+          <h3 class="feature-title">
+            <span class="lang-zh">知识图谱支持</span>
+            <span class="lang-en">Knowledge Graph Support</span>
+          </h3>
+          <p class="feature-description">
+            <span class="lang-zh">
+              构建了完整的古建筑知识图谱，涵盖不同朝代、地区的建筑特征，确保生成结果的历史准确性。
+            </span>
+            <span class="lang-en">
+              Built a comprehensive ancient architecture knowledge graph covering architectural features from different 
+              dynasties and regions, ensuring historical accuracy of generated results.
+            </span>
+          </p>
+        </div>
+        <div class="feature-card fade-in">
+          <div class="feature-icon"><i class="fas fa-users"></i></div>
+          <h3 class="feature-title">
+            <span class="lang-zh">友好交互界面</span>
+            <span class="lang-en">User-friendly Interface</span>
+          </h3>
+          <p class="feature-description">
+            <span class="lang-zh">
+              提供直观的对话式界面，用户只需输入古文献描述，系统即可自动完成从文本到3D模型的全流程。
+            </span>
+            <span class="lang-en">
+              Provides an intuitive conversational interface where users simply input ancient text descriptions, and the 
+              system automatically completes the entire process from text to 3D model.
+            </span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 工作流程 -->
+  <section class="workflow" id="workflow">
+    <div class="container">
+      <h2 class="section-title fade-in">
+        <span class="lang-zh">工作流程</span>
+        <span class="lang-en">Workflow</span>
+      </h2>
+      <div class="workflow-steps">
+        <div class="step fade-in">
+          <div class="step-number">1</div>
+          <h3 class="step-title">
+            <span class="lang-zh">文献输入</span>
+            <span class="lang-en">Literature Input</span>
+          </h3>
+          <p class="step-description">
+            <span class="lang-zh">用户输入古文献中的建筑描述</span>
+            <span class="lang-en">User inputs architectural descriptions from ancient texts</span>
+          </p>
+        </div>
+        <div class="step fade-in">
+          <div class="step-number">2</div>
+          <h3 class="step-title">
+            <span class="lang-zh">AI分析</span>
+            <span class="lang-en">AI Analysis</span>
+          </h3>
+          <p class="step-description">
+            <span class="lang-zh">大模型解析文本并推理建筑参数</span>
+            <span class="lang-en">LLM analyzes text and infers architectural parameters</span>
+          </p>
+        </div>
+        <div class="step fade-in">
+          <div class="step-number">3</div>
+          <h3 class="step-title">
+            <span class="lang-zh">参数转换</span>
+            <span class="lang-en">Parameter Conversion</span>
+          </h3>
+          <p class="step-description">
+            <span class="lang-zh">规则引擎生成标准化参数数据</span>
+            <span class="lang-en">Rule engine generates standardized parameter data</span>
+          </p>
+        </div>
+        <div class="step fade-in">
+          <div class="step-number">4</div>
+          <h3 class="step-title">
+            <span class="lang-zh">规则推理</span>
+            <span class="lang-en">Rule-based Reasoning</span>
+          </h3>
+          <p class="step-description">
+            <span class="lang-zh">基于知识库进行建筑规则推理</span>
+            <span class="lang-en">Architectural rule reasoning based on knowledge base</span>
+          </p>
+        </div>
+        <div class="step fade-in">
+          <div class="step-number">5</div>
+          <h3 class="step-title">
+            <span class="lang-zh">3D建模</span>
+            <span class="lang-en">3D Modeling</span>
+          </h3>
+          <p class="step-description">
+            <span class="lang-zh">Blender自动生成建筑3D模型</span>
+            <span class="lang-en">Blender automatically generates 3D architectural model</span>
+          </p>
+        </div>
+        <div class="step fade-in">
+          <div class="step-number">6</div>
+          <h3 class="step-title">
+            <span class="lang-zh">Web展示</span>
+            <span class="lang-en">Web Display</span>
+          </h3>
+          <p class="step-description">
+            <span class="lang-zh">实时同步展示可交互3D模型</span>
+            <span class="lang-en">Real-time synchronized interactive 3D model display</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 演示部分 -->
+  <section class="demo" id="demo">
+    <div class="demo-container">
+      <h2 class="section-title fade-in">
+        <span class="lang-zh">系统演示</span>
+        <span class="lang-en">System Demo</span>
+      </h2>
+      
+      <!-- 视频展示 -->
+      <div class="video-wrapper fade-in">
+        <video id="demoVideo" controls poster="介绍用照片和视频/1 (1).png">
+          <source src="介绍用照片和视频/1 (1).mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+
+      <!-- 图片展示 -->
+      <div class="gallery">
+        <div class="gallery-item fade-in">
+          <img src="介绍用照片和视频/1 (2).png" alt="文献输入界面" loading="lazy">
+        </div>
+        <div class="gallery-item fade-in">
+          <img src="介绍用照片和视频/1 (3).png" alt="AI分析过程" loading="lazy">
+        </div>
+        <div class="gallery-item fade-in">
+          <img src="介绍用照片和视频/1 (4).png" alt="参数化数据" loading="lazy">
+        </div>
+        <div class="gallery-item fade-in">
+          <img src="介绍用照片和视频/1 (5).png" alt="3D模型生成" loading="lazy">
+        </div>
+        <div class="gallery-item fade-in">
+          <img src="介绍用照片和视频/1 (6).png" alt="最终效果展示" loading="lazy">
+        </div>
+        <div class="gallery-item fade-in">
+          <img src="介绍用照片和视频/2.png" alt="系统架构图" loading="lazy">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 技术栈 -->
+  <section class="tech-stack" id="tech">
+    <div class="container">
+      <h2 class="section-title fade-in">
+        <span class="lang-zh">技术栈</span>
+        <span class="lang-en">Tech Stack</span>
+      </h2>
+      <div class="tech-grid">
+        <div class="tech-item fade-in">
+          <div class="tech-icon"><i class="fas fa-brain"></i></div>
+          <h3>QWQ-32B</h3>
+          <p class="lang-zh">微调大语言模型</p>
+          <p class="lang-en">Fine-tuned LLM</p>
+        </div>
+        <div class="tech-item fade-in">
+          <div class="tech-icon"><i class="fab fa-python"></i></div>
+          <h3>Python</h3>
+          <p class="lang-zh">规则引擎开发</p>
+          <p class="lang-en">Rule Engine Development</p>
+        </div>
+        <div class="tech-item fade-in">
+          <div class="tech-icon"><i class="fas fa-cube"></i></div>
+          <h3>Blender</h3>
+          <p class="lang-zh">3D建模与渲染</p>
+          <p class="lang-en">3D Modeling & Rendering</p>
+        </div>
+        <div class="tech-item fade-in">
+          <div class="tech-icon"><i class="fab fa-node-js"></i></div>
+          <h3>Node.js</h3>
+          <p class="lang-zh">后端服务</p>
+          <p class="lang-en">Backend Service</p>
+        </div>
+        <div class="tech-item fade-in">
+          <div class="tech-icon"><i class="fab fa-html5"></i></div>
+          <h3>Web Technologies</h3>
+          <p class="lang-zh">前端展示</p>
+          <p class="lang-en">Frontend Display</p>
+        </div>
+        <div class="tech-item fade-in">
+          <div class="tech-icon"><i class="fas fa-project-diagram"></i></div>
+          <h3>Knowledge Graph</h3>
+          <p class="lang-zh">古建筑知识库</p>
+          <p class="lang-en">Architecture Knowledge Base</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // 页面加载完成后隐藏加载动画
+    window.addEventListener('load', function() {
+      setTimeout(() => {
+        document.getElementById('loader').classList.add('hidden');
+      }, 500);
+    });
+
+    // 语言切换功能
+    function toggleLanguage() {
+      document.body.classList.toggle('en');
+      localStorage.setItem('language', document.body.classList.contains('en') ? 'en' : 'zh');
+    }
+
+    // 恢复语言设置
+    if (localStorage.getItem('language') === 'en') {
+      document.body.classList.add('en');
+    }
+
+    // 导航栏滚动效果
+    window.addEventListener('scroll', function() {
+      const navbar = document.getElementById('navbar');
+      if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+    });
+
+    // 滚动动画
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver(function(entries) {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.fade-in').forEach(el => {
+      observer.observe(el);
+    });
+
+    // 平滑滚动
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+
+    // 图片点击放大功能
+    document.querySelectorAll('.gallery-item').forEach(item => {
+      item.addEventListener('click', function() {
+        const img = this.querySelector('img');
+        const overlay = document.createElement('div');
+        overlay.style.cssText = `
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.9);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 9999;
+          cursor: zoom-out;
+        `;
+        
+        const largeImg = document.createElement('img');
+        largeImg.src = img.src;
+        largeImg.style.cssText = `
+          max-width: 90%;
+          max-height: 90%;
+          object-fit: contain;
+        `;
+        
+        overlay.appendChild(largeImg);
+        document.body.appendChild(overlay);
+        
+        overlay.addEventListener('click', function() {
+          document.body.removeChild(overlay);
+        });
+      });
+    });
+
+    // 视频播放优化
+    const video = document.getElementById('demoVideo');
+    if (video) {
+      // 当视频进入视口时开始加载
+      const videoObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            video.load();
+            videoObserver.unobserve(video);
+          }
+        });
+      }, { threshold: 0.25 });
+      
+      videoObserver.observe(video);
+    }
+  </script>
+</body>
+</html> 
