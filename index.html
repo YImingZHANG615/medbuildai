@@ -618,6 +618,36 @@
       color: var(--text-secondary);
     }
 
+    /* 标语样式 */
+    .slogan {
+      margin-bottom: 1.5rem;
+    }
+
+    .slogan-text {
+      font-size: 1.2rem;
+      font-style: italic;
+      letter-spacing: 2px;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+      font-family: 'Roboto', sans-serif;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, var(--accent), var(--accent-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .slogan-line {
+      width: 100px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      margin: 0.5rem auto;
+    }
+
+    .copyright {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
     @media (max-width: 768px) {
       .footer-content {
         grid-template-columns: 1fr;
@@ -633,6 +663,10 @@
       .institution-info .org-logo {
         width: 45px;
         height: 45px;
+      }
+
+      .slogan-text {
+        font-size: 1rem;
       }
     }
   </style>
@@ -1044,7 +1078,11 @@
       </div>
 
       <div class="footer-bottom">
-        <p>© 2025 Heri-Agent. All rights reserved.</p>
+        <div class="slogan">
+          <p class="slogan-text">Seeing the Invisible Culture</p>
+          <div class="slogan-line"></div>
+        </div>
+        <p class="copyright">© 2025 Heri-Agent. All rights reserved.</p>
       </div>
     </div>
   </footer>
