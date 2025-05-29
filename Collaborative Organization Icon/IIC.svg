@@ -8,12 +8,12 @@ xmlns="http://www.w3.org/2000/svg">
   <!-- 第二个 I -->
   <rect x="4" y="0" width="2" height="10" fill="#000" />
   <!-- 像素风格的 C -->
-  <!-- 顶部两个方块 -->
-  <rect x="8" y="0" width="2" height="2" fill="#000" />
+  <!-- 顶部两个方块（右移一格） -->
   <rect x="10" y="0" width="2" height="2" fill="#000" />
-  <!-- 左侧两个垂直方块 -->
-  <rect x="8" y="2" width="2" height="2" fill="#000" />
-  <rect x="8" y="4" width="2" height="2" fill="#000" />
+  <rect x="12" y="0" width="2" height="2" fill="#000" />
+  <!-- 左侧两个垂直方块（下移一格） -->
+  <rect x="8" y="3" width="2" height="2" fill="#000" />
+  <rect x="8" y="5" width="2" height="2" fill="#000" />
   <!-- 右下角两个横向方块 -->
   <rect x="10" y="8" width="2" height="2" fill="#000" />
   <rect x="12" y="8" width="2" height="2" fill="#000" />
