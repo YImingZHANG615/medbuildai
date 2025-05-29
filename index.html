@@ -576,8 +576,18 @@
       margin-bottom: 1rem;
     }
 
-    .institution-info i,
-    .partner-item i,
+    .org-logo {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+      filter: brightness(0) invert(0.7);
+      transition: filter 0.3s ease;
+    }
+
+    .partner-item:hover .org-logo {
+      filter: brightness(0) invert(0.9);
+    }
+
     .contact-info i {
       font-size: 1.5rem;
       color: var(--accent);
@@ -606,6 +616,11 @@
       .footer-content {
         grid-template-columns: 1fr;
         gap: 2rem;
+      }
+
+      .org-logo {
+        width: 30px;
+        height: 30px;
       }
     }
   </style>
@@ -957,7 +972,7 @@
             <span class="lang-en">Research Institution</span>
           </h3>
           <div class="institution-info">
-            <i class="fas fa-university"></i>
+            <img src="Collaborative Organization Icon/北京建筑大学人工智能设计实验室.svg" alt="AI Lab Logo" class="org-logo">
             <p>
               <span class="lang-zh">北京建筑大学 人工智能设计实验室</span>
               <span class="lang-en">AI Design Laboratory, Beijing University of Civil Engineering and Architecture</span>
@@ -973,21 +988,21 @@
           </h3>
           <div class="partners-list">
             <div class="partner-item">
-              <i class="fas fa-university"></i>
+              <img src="Collaborative Organization Icon/BUCEA.png" alt="BUCEA Logo" class="org-logo">
               <p>
                 <span class="lang-zh">北京建筑大学</span>
                 <span class="lang-en">Beijing University of Civil Engineering and Architecture</span>
               </p>
             </div>
             <div class="partner-item">
-              <i class="fas fa-building"></i>
+              <img src="Collaborative Organization Icon/pinlan.png" alt="Pinlan Logo" class="org-logo">
               <p>
                 <span class="lang-zh">品览</span>
                 <span class="lang-en">Pinlan</span>
               </p>
             </div>
             <div class="partner-item">
-              <i class="fas fa-vr-cardboard"></i>
+              <img src="Collaborative Organization Icon/IIC.svg" alt="IIC Logo" class="org-logo">
               <p>
                 <span class="lang-zh">IIC（北京建筑大学虚拟仿真实验室）</span>
                 <span class="lang-en">IIC (BUCEA Virtual Simulation Laboratory)</span>
