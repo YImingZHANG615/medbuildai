@@ -3,21 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Heri-Agent - 古建筑AI复原系统 | Ancient Architecture AI Reconstruction System</title>
-  <link rel="icon" href="logo.svg" type="image/svg+xml">
+  <title>Heri-Agent - 医疗建筑AI设计系统 | MedBuild AI Hospital Design System</title>
+  <link rel="icon" href="seed-icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg-primary: #0a0a0a;
       --bg-secondary: #1a1a1a;
-      --bg-card: rgba(30, 30, 46, 0.85);
-      --text-primary: #f1f1f1;
-      --text-secondary: #a7a7a7;
-      --accent: #9575cd;
-      --accent-light: #b39ddb;
-      --accent-dark: #4d2c91;
-      --gold: #d4af37;
+      --bg-card: rgba(30, 46, 30, 0.85);
+      --text-primary: #4ecdc4;
+      --text-secondary: #a0d8cc;
+      --accent: #00a86b;
+      --accent-light: #4ecdc4;
+      --accent-dark: #007a52;
+      --medical: #00a86b;
+      --medical-light: #4ecdc4;
     }
 
     * {
@@ -72,7 +73,7 @@
     .logo-text {
       font-size: 1.5rem;
       font-weight: 700;
-      background: linear-gradient(135deg, var(--accent), var(--gold));
+      background: linear-gradient(135deg, var(--accent), var(--medical));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
@@ -128,7 +129,7 @@
       opacity: 0.1;
       background-image: 
         radial-gradient(circle at 20% 50%, var(--accent) 0%, transparent 50%),
-        radial-gradient(circle at 80% 80%, var(--gold) 0%, transparent 50%);
+        radial-gradient(circle at 80% 80%, var(--medical) 0%, transparent 50%);
     }
 
     .hero-content {
@@ -179,30 +180,71 @@
       flex-wrap: wrap;
     }
 
+    /* CTA按钮样式 */
     .cta-button {
-      padding: 1rem 2.5rem;
-      border-radius: 30px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1.5rem 3.5rem;
+      background: linear-gradient(135deg, var(--medical), var(--accent));
+      color: white;
       text-decoration: none;
-      font-weight: 500;
+      border-radius: 1rem;
+      font-size: 1.5rem;
+      font-weight: 700;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
       transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
       position: relative;
       overflow: hidden;
+      animation: pulse 2s infinite;
     }
 
-    .cta-primary {
-      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
-      color: white;
-    }
-
-    .cta-secondary {
-      background: transparent;
-      color: var(--accent);
-      border: 2px solid var(--accent);
+    .cta-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s;
     }
 
     .cta-button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 30px rgba(149, 117, 205, 0.3);
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 30px 40px -15px rgba(0, 0, 0, 0.2);
+    }
+
+    .cta-button:hover::before {
+      left: 100%;
+    }
+
+    .cta-button i {
+      font-size: 1.75rem;
+      transition: transform 0.3s;
+    }
+
+    .cta-button:hover i {
+      transform: translateX(5px);
+    }
+
+    /* 添加脉冲动画效果 */
+    @keyframes pulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(0, 168, 107, 0.4);
+      }
+      70% {
+        box-shadow: 0 0 0 15px rgba(0, 168, 107, 0);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(0, 168, 107, 0);
+      }
+    }
+
+    .cta-button:active {
+      transform: translateY(-1px);
     }
 
     /* 特性部分 */
@@ -337,6 +379,7 @@
       width: 100%;
       height: auto;
       display: block;
+      border-radius: 15px;
     }
 
     .play-overlay {
@@ -675,7 +718,7 @@
   <!-- 加载动画 -->
   <div class="loader" id="loader">
     <div class="loader-content">
-      <img src="logo.svg" alt="Logo" class="loader-logo">
+      <img src="seed-icon.svg" alt="Logo" class="loader-logo">
     </div>
   </div>
 
@@ -683,8 +726,8 @@
   <nav class="navbar" id="navbar">
     <div class="nav-container">
       <div class="logo-section">
-        <img src="logo.svg" alt="Logo" class="logo-img">
-        <h1 class="logo-text">Heri-Agent</h1>
+        <img src="seed-icon.svg" alt="Logo" class="logo-img">
+        <h1 class="logo-text">MedBuild AI</h1>
       </div>
       <ul class="nav-links">
         <li><a href="#home"><span class="lang-zh">首页</span><span class="lang-en">Home</span></a></li>
@@ -704,28 +747,29 @@
   <section class="hero" id="home">
     <div class="hero-bg"></div>
     <div class="hero-content fade-in">
-      <img src="logo.svg" alt="Heri-Agent Logo" class="hero-logo">
+      <img src="seed-icon.svg" alt="MedBuild AI Logo" class="hero-logo">
       <h1 class="hero-title">
-        <span class="lang-zh">Heri-Agent 古建筑AI复原系统</span>
-        <span class="lang-en">Heri-Agent Ancient Architecture AI System</span>
+        <span class="lang-zh">MedBuild AI 医疗建筑AI设计系统</span>
+        <span class="lang-en">MedBuild AI Medical Building AI Design System</span>
       </h1>
       <p class="hero-subtitle">
-        <span class="lang-zh">基于大语言模型的中国古建筑智能复原解决方案</span>
-        <span class="lang-en">LLM-based Chinese Ancient Architecture Reconstruction Solution</span>
+        <span class="lang-zh">基于大语言模型的医疗建筑智能设计解决方案</span>
+        <span class="lang-en">LLM-based Medical Building Intelligent Design Solution</span>
       </p>
       <p class="hero-description">
         <span class="lang-zh">
-          我们基于QWQ-32B微调了专门的古建筑文本领域大模型，能够从古文献中推理出建筑的形制、开间进深、屋顶样式等级等关键信息，
-          通过Python规则引擎输出参数化数据，在Blender中自动生成精确的3D模型，最终同步展示在Web端。
+          MedBuild AI通过创新的混合智能范式，协同大型语言模型（LLM）的认知与生成能力以及确定性专家系统的规则推理能力。
+          系统通过对话式AI收集在地化信息，将非结构化信息编译为参数化"数字基因"，最终生成符合当地规范、资源存量与预算约束的医院三维模型。
         </span>
         <span class="lang-en">
-          We fine-tuned a specialized LLM based on QWQ-32B for ancient architecture texts, capable of inferring architectural 
-          forms, bay depths, roof styles and grades from ancient literature. Through Python rule engines, it outputs parametric 
-          data to automatically generate accurate 3D models in Blender, finally synchronized for web display.
+          MedBuild AI uses an innovative hybrid intelligence paradigm that combines the cognitive and generative capabilities of 
+          Large Language Models (LLM) with the rule-based reasoning of deterministic expert systems. The system collects localized 
+          information through conversational AI, compiles unstructured information into parametric "digital genes", and ultimately 
+          generates 3D hospital models that comply with local regulations, resource inventory, and budget constraints.
         </span>
       </p>
       <div class="cta-buttons">
-        <a href="#demo" class="cta-button cta-secondary">
+        <a href="#demo" class="cta-button">
           <span class="lang-zh">观看演示</span>
           <span class="lang-en">Watch Demo</span>
         </a>
@@ -743,10 +787,19 @@
       
       <!-- 视频展示 -->
       <div class="video-wrapper fade-in">
-        <video id="demoVideo" controls poster="介绍用照片和视频/1 (1).png">
-          <source src="介绍用照片和视频/1 (1).mp4" type="video/mp4">
-          Your browser does not support the video tag.
+        <video controls>
+          <source src="介绍用照片和视频/demo.mp4" type="video/mp4">
+          <span class="lang-zh">您的浏览器不支持视频播放</span>
+          <span class="lang-en">Your browser does not support video playback</span>
         </video>
+      </div>
+
+      <div class="cta-buttons" style="margin-top: 2rem; text-align: center;">
+        <a href="https://medbuildai.uc.r.appspot.com/" class="cta-button">
+          <span class="lang-zh">进入系统</span>
+          <span class="lang-en">Enter System</span>
+          <i class="fas fa-arrow-right"></i>
+        </a>
       </div>
 
       <!-- 图片展示 -->
@@ -789,10 +842,10 @@
           </h3>
           <p class="feature-description">
             <span class="lang-zh">
-              基于QWQ-32B微调的专业模型，能够准确理解古文献中的建筑描述，推理出建筑的具体形制参数。
+              基于QWQ-32B微调的专业模型，能够准确理解医疗文献中的建筑描述，推理出建筑的具体形制参数。
             </span>
             <span class="lang-en">
-              Professional model fine-tuned on QWQ-32B, accurately understands architectural descriptions in ancient texts 
+              Professional model fine-tuned on QWQ-32B, accurately understands architectural descriptions in medical texts 
               and infers specific architectural parameters.
             </span>
           </p>
@@ -821,10 +874,10 @@
           </h3>
           <p class="feature-description">
             <span class="lang-zh">
-              与Blender几何节点深度集成，根据参数自动生成高质量的3D建筑模型，支持多种建筑类型和风格。
+              基于Three.js引擎，根据参数自动生成高质量的3D建筑模型，支持多种建筑类型和风格。
             </span>
             <span class="lang-en">
-              Deep integration with Blender geometry nodes, automatically generates high-quality 3D architectural models 
+              Based on Three.js engine, automatically generates high-quality 3D architectural models 
               based on parameters, supporting various building types and styles.
             </span>
           </p>
@@ -837,10 +890,10 @@
           </h3>
           <p class="feature-description">
             <span class="lang-zh">
-              通过视窗同步技术，将Blender中的模型实时展示在Web端，用户可以交互式地查看和探索建筑细节。
+              通过视窗同步技术，将Three.js中的模型实时展示在Web端，用户可以交互式地查看和探索建筑细节。
             </span>
             <span class="lang-en">
-              Through viewport synchronization technology, displays Blender models in real-time on the web, allowing users 
+              Through viewport synchronization technology, displays Three.js models in real-time on the web, allowing users 
               to interactively view and explore architectural details.
             </span>
           </p>
@@ -853,11 +906,11 @@
           </h3>
           <p class="feature-description">
             <span class="lang-zh">
-              构建了完整的古建筑知识图谱，涵盖不同朝代、地区的建筑特征，确保生成结果的历史准确性。
+              构建了完整的医疗建筑知识图谱，涵盖不同类型、地区的建筑特征，确保生成结果的准确性。
             </span>
             <span class="lang-en">
-              Built a comprehensive ancient architecture knowledge graph covering architectural features from different 
-              dynasties and regions, ensuring historical accuracy of generated results.
+              Built a comprehensive medical architecture knowledge graph covering architectural features from different 
+              types and regions, ensuring accuracy of generated results.
             </span>
           </p>
         </div>
@@ -869,10 +922,10 @@
           </h3>
           <p class="feature-description">
             <span class="lang-zh">
-              提供直观的对话式界面，用户只需输入古文献描述，系统即可自动完成从文本到3D模型的全流程。
+              提供直观的对话式界面，用户只需输入医疗文献描述，系统即可自动完成从文本到3D模型的全流程。
             </span>
             <span class="lang-en">
-              Provides an intuitive conversational interface where users simply input ancient text descriptions, and the 
+              Provides an intuitive conversational interface where users simply input medical text descriptions, and the 
               system automatically completes the entire process from text to 3D model.
             </span>
           </p>
@@ -896,8 +949,8 @@
             <span class="lang-en">Literature Input</span>
           </h3>
           <p class="step-description">
-            <span class="lang-zh">用户输入古文献中的建筑描述</span>
-            <span class="lang-en">User inputs architectural descriptions from ancient texts</span>
+            <span class="lang-zh">用户输入医疗文献中的建筑描述</span>
+            <span class="lang-en">User inputs architectural descriptions from medical texts</span>
           </p>
         </div>
         <div class="step fade-in">
@@ -940,8 +993,8 @@
             <span class="lang-en">3D Modeling</span>
           </h3>
           <p class="step-description">
-            <span class="lang-zh">Blender自动生成建筑3D模型</span>
-            <span class="lang-en">Blender automatically generates 3D architectural model</span>
+            <span class="lang-zh">Three.js自动生成建筑3D模型</span>
+            <span class="lang-en">Three.js automatically generates 3D architectural model</span>
           </p>
         </div>
         <div class="step fade-in">
@@ -968,40 +1021,40 @@
       </h2>
       <div class="tech-grid">
         <div class="tech-item fade-in">
-          <div class="tech-icon"><i class="fas fa-brain"></i></div>
-          <h3>QWQ-32B</h3>
-          <p class="lang-zh">微调大语言模型</p>
-          <p class="lang-en">Fine-tuned LLM</p>
+          <div class="tech-icon"><i class="fas fa-comments"></i></div>
+          <h3>Google Gemini</h3>
+          <p class="lang-zh">对话式AI与多代理流水线</p>
+          <p class="lang-en">Conversational AI & Multi-Agent Pipeline</p>
         </div>
         <div class="tech-item fade-in">
           <div class="tech-icon"><i class="fab fa-python"></i></div>
           <h3>Python</h3>
-          <p class="lang-zh">规则引擎开发</p>
-          <p class="lang-en">Rule Engine Development</p>
+          <p class="lang-zh">专家系统与医院规划算法</p>
+          <p class="lang-en">Expert System & Hospital Planning Algorithms</p>
         </div>
         <div class="tech-item fade-in">
           <div class="tech-icon"><i class="fas fa-cube"></i></div>
-          <h3>Blender</h3>
-          <p class="lang-zh">3D建模与渲染</p>
-          <p class="lang-en">3D Modeling & Rendering</p>
+          <h3>Three.js</h3>
+          <p class="lang-zh">程序化几何引擎与3D可视化</p>
+          <p class="lang-en">Procedural Geometry Engine & 3D Visualization</p>
         </div>
         <div class="tech-item fade-in">
           <div class="tech-icon"><i class="fab fa-node-js"></i></div>
           <h3>Node.js</h3>
-          <p class="lang-zh">后端服务</p>
-          <p class="lang-en">Backend Service</p>
+          <p class="lang-zh">后端API服务与路由</p>
+          <p class="lang-en">Backend API Services & Routing</p>
         </div>
         <div class="tech-item fade-in">
-          <div class="tech-icon"><i class="fab fa-html5"></i></div>
-          <h3>Web Technologies</h3>
-          <p class="lang-zh">前端展示</p>
-          <p class="lang-en">Frontend Display</p>
+          <div class="tech-icon"><i class="fas fa-shapes"></i></div>
+          <h3>Clipper.js</h3>
+          <p class="lang-zh">多边形布尔运算与几何计算</p>
+          <p class="lang-en">Polygon Boolean Operations & Geometry</p>
         </div>
         <div class="tech-item fade-in">
-          <div class="tech-icon"><i class="fas fa-project-diagram"></i></div>
-          <h3>Knowledge Graph</h3>
-          <p class="lang-zh">古建筑知识库</p>
-          <p class="lang-en">Architecture Knowledge Base</p>
+          <div class="tech-icon"><i class="fas fa-seedling"></i></div>
+          <h3>种子协议</h3>
+          <p class="lang-zh">PHCMEISXG参数化数据结构</p>
+          <p class="lang-en">PHCMEISXG Parametric Data Structure</p>
         </div>
       </div>
     </div>
@@ -1079,10 +1132,13 @@
 
       <div class="footer-bottom">
         <div class="slogan">
-          <p class="slogan-text">Seeing the Invisible Culture</p>
+          <p class="slogan-text">
+            <span class="lang-zh">一颗数字种子，一个生命希望</span>
+            <span class="lang-en">One Digital Seed, One Life Hope</span>
+          </p>
           <div class="slogan-line"></div>
         </div>
-        <p class="copyright">© 2025 Heri-Agent. All rights reserved.</p>
+        <p class="copyright"> 2025 MedBuild AI. All rights reserved.</p>
       </div>
     </div>
   </footer>
@@ -1199,6 +1255,18 @@
       
       videoObserver.observe(video);
     }
+
+    // 鼠标跟随效果
+    const ctaButtons = document.querySelectorAll('.cta-button');
+    ctaButtons.forEach(button => {
+      button.addEventListener('mousemove', (e) => {
+        const rect = button.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        button.style.setProperty('--mouse-x', `${x}px`);
+        button.style.setProperty('--mouse-y', `${y}px`);
+      });
+    });
   </script>
 </body>
-</html> 
+</html>
